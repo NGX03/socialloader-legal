@@ -102,6 +102,22 @@ già autenticati: l'utente si trova sulla bacheca e, da lì, naviga verso la sch
 Le catene di navigazione iniziali di ciascun sequence sono già riportate, messaggio per messaggio,
 nella sezione 2.
 
+### 0.8 Tipi di collegamento nei diagrammi delle classi
+Attenzione: la convenzione dipende dal documento.
+
+Nei **diagrammi delle classi del RAD** (sezione 3), che sono diagrammi di analisi, i collegamenti
+tra Boundary, Control ed Entity sono **associazioni**: linea continua con freccia di navigabilità
+aperta (→) verso la classe usata. Sulle associazioni tra **entity** si indicano le **molteplicità**
+(1, 0..1, 0..*, 1..*), senza freccia.
+
+Nei **diagrammi delle classi dell'ODD** (sezione 4.5–4.6), che sono diagrammi di dettaglio
+implementativo, si segue la convenzione dell'esempio di riferimento: le classi si disegnano
+**affiancate dentro un box package, senza tracciare alcun collegamento** tra loro (né associazioni
+né dipendenze). Ogni classe è documentata dai propri attributi e metodi con firma completa.
+
+Le **dipendenze** (linea tratteggiata a punta aperta, `..>`) si usano solo nei **diagrammi dei
+package** (sezioni 4.1 e 4.3), per esprimere che un package dipende da un altro.
+
 ---
 
 ## 1. DIAGRAMMI DEI CASI D'USO (7)
@@ -795,8 +811,8 @@ Per ogni sottosistema crea un *Class Diagram* e uno complessivo per le Entities.
 2. Per **ogni classe** elencata sotto: trascina una *Class* dalla toolbar, scrivi il nome, poi applica lo stereotipo (tasto destro → *Stereotype* → `boundary`/`control`/`entity`).
 3. Per le **entity**, aggiungi gli **attributi** (tasto destro sulla classe → *Add Attribute*, uno per riga).
 4. Per **ogni classe**, aggiungi le **funzioni** elencate (tasto destro → *Add Operation*, una per riga, esattamente come scritte).
-5. Traccia le **dipendenze** (freccia tratteggiata a punta aperta, tipo *Dependency* `..>`) nell'ordine: ogni Boundary → il suo Control; ogni Control → le Entity che usa; ogni Control → `DBMSBND`. L'elenco esatto è in fondo a ciascun sottosistema («Dipendenze»).
-6. Nel diagramma **Entities**, invece delle dipendenze traccia le **associazioni** con le molteplicità indicate («Relazioni»).
+5. Traccia le **associazioni** (linea continua con navigabilità →, freccia aperta) nell'ordine: ogni Boundary → il suo Control; ogni Control → le Entity che usa; ogni Control → `DBMSBND`. L'elenco esatto è in fondo a ciascun sottosistema («Associazioni»).
+6. Nel diagramma **Entities**, traccia le **associazioni** con le molteplicità indicate («Relazioni»).
 
 
 ### 3.A — Autenticazione
@@ -847,7 +863,7 @@ Per ogni sottosistema crea un *Class Diagram* e uno complessivo per le Entities.
 **DBMSBND** `<<boundary>>`
 - Funzioni: queryCredenziali(), queryStudente(), querySegretoSecondoFattore(), checkRegistrato(), insertStudente(), insertSessione(), insertTokenReset(), updateIdentitaFederata(), updatePassword()
 
-- **Dipendenze:** LoginBND ⇢ LoginCTRL; Verifica2FABND ⇢ Verifica2FACTRL; RegistrazioneBND ⇢ RegistrazioneCTRL; RecuperoPasswordBND ⇢ RecuperoPasswordCTRL; LoginCTRL ⇢ StudenteAFAM; LoginCTRL ⇢ DBMSBND; Verifica2FACTRL ⇢ StudenteAFAM; Verifica2FACTRL ⇢ DBMSBND; RegistrazioneCTRL ⇢ StudenteAFAM; RegistrazioneCTRL ⇢ DBMSBND; AccessoFederatoCTRL ⇢ StudenteAFAM; AccessoFederatoCTRL ⇢ DBMSBND; RecuperoPasswordCTRL ⇢ DBMSBND
+- **Associazioni:** LoginBND → LoginCTRL; Verifica2FABND → Verifica2FACTRL; RegistrazioneBND → RegistrazioneCTRL; RecuperoPasswordBND → RecuperoPasswordCTRL; LoginCTRL → StudenteAFAM; LoginCTRL → DBMSBND; Verifica2FACTRL → StudenteAFAM; Verifica2FACTRL → DBMSBND; RegistrazioneCTRL → StudenteAFAM; RegistrazioneCTRL → DBMSBND; AccessoFederatoCTRL → StudenteAFAM; AccessoFederatoCTRL → DBMSBND; RecuperoPasswordCTRL → DBMSBND
 
 
 ### 3.B — Gestione Profilo
@@ -884,7 +900,7 @@ Per ogni sottosistema crea un *Class Diagram* e uno complessivo per le Entities.
 **DBMSBND** `<<boundary>>`
 - Funzioni: queryProfilo(), queryContenuti(), updateProfilo(), insertIdentitaFederata()
 
-- **Dipendenze:** DashboardBND ⇢ ProfiloCTRL; ImpostazioniProfiloBND ⇢ ModificaProfiloCTRL; ImpostazioniProfiloBND ⇢ FederazioneCTRL; ProfiloCTRL ⇢ StudenteAFAM; ProfiloCTRL ⇢ DBMSBND; ModificaProfiloCTRL ⇢ StudenteAFAM; ModificaProfiloCTRL ⇢ DBMSBND; FederazioneCTRL ⇢ StudenteAFAM; FederazioneCTRL ⇢ IdentitaFederata; FederazioneCTRL ⇢ DBMSBND
+- **Associazioni:** DashboardBND → ProfiloCTRL; ImpostazioniProfiloBND → ModificaProfiloCTRL; ImpostazioniProfiloBND → FederazioneCTRL; ProfiloCTRL → StudenteAFAM; ProfiloCTRL → DBMSBND; ModificaProfiloCTRL → StudenteAFAM; ModificaProfiloCTRL → DBMSBND; FederazioneCTRL → StudenteAFAM; FederazioneCTRL → IdentitaFederata; FederazioneCTRL → DBMSBND
 
 
 ### 3.C — Gestione Contenuti
@@ -921,7 +937,7 @@ Per ogni sottosistema crea un *Class Diagram* e uno complessivo per le Entities.
 **DBMSBND** `<<boundary>>`
 - Funzioni: queryContenuto(), queryContenuti(), insertContenuto(), updateContenuto(), updateThumbnail()
 
-- **Dipendenze:** ArchivioBND ⇢ CaricaContenutoCTRL; ArchivioBND ⇢ ModificaContenutoCTRL; ArchivioBND ⇢ EliminaContenutoCTRL; ArchivioBND ⇢ ThumbnailCTRL; CaricaContenutoCTRL ⇢ ContenutoMultimediale; CaricaContenutoCTRL ⇢ StudenteAFAM; CaricaContenutoCTRL ⇢ DBMSBND; ModificaContenutoCTRL ⇢ ContenutoMultimediale; ModificaContenutoCTRL ⇢ StudenteAFAM; ModificaContenutoCTRL ⇢ DBMSBND; EliminaContenutoCTRL ⇢ ContenutoMultimediale; EliminaContenutoCTRL ⇢ StudenteAFAM; EliminaContenutoCTRL ⇢ DBMSBND; ThumbnailCTRL ⇢ ContenutoMultimediale; ThumbnailCTRL ⇢ StudenteAFAM; ThumbnailCTRL ⇢ DBMSBND
+- **Associazioni:** ArchivioBND → CaricaContenutoCTRL; ArchivioBND → ModificaContenutoCTRL; ArchivioBND → EliminaContenutoCTRL; ArchivioBND → ThumbnailCTRL; CaricaContenutoCTRL → ContenutoMultimediale; CaricaContenutoCTRL → StudenteAFAM; CaricaContenutoCTRL → DBMSBND; ModificaContenutoCTRL → ContenutoMultimediale; ModificaContenutoCTRL → StudenteAFAM; ModificaContenutoCTRL → DBMSBND; EliminaContenutoCTRL → ContenutoMultimediale; EliminaContenutoCTRL → StudenteAFAM; EliminaContenutoCTRL → DBMSBND; ThumbnailCTRL → ContenutoMultimediale; ThumbnailCTRL → StudenteAFAM; ThumbnailCTRL → DBMSBND
 
 
 ### 3.D — Gestione Portfolio
@@ -961,7 +977,7 @@ Per ogni sottosistema crea un *Class Diagram* e uno complessivo per le Entities.
 **DBMSBND** `<<boundary>>`
 - Funzioni: queryPortfolio(), insertPortfolio(), updatePortfolio(), deletePortfolio()
 
-- **Dipendenze:** GestionePortfolioBND ⇢ CreaPortfolioCTRL; GestionePortfolioBND ⇢ ModificaPortfolioCTRL; GestionePortfolioBND ⇢ EliminaPortfolioCTRL; CreaPortfolioCTRL ⇢ Portfolio; CreaPortfolioCTRL ⇢ StudenteAFAM; CreaPortfolioCTRL ⇢ DBMSBND; ModificaPortfolioCTRL ⇢ Portfolio; ModificaPortfolioCTRL ⇢ StudenteAFAM; ModificaPortfolioCTRL ⇢ DBMSBND; EliminaPortfolioCTRL ⇢ Portfolio; EliminaPortfolioCTRL ⇢ StudenteAFAM; EliminaPortfolioCTRL ⇢ DBMSBND
+- **Associazioni:** GestionePortfolioBND → CreaPortfolioCTRL; GestionePortfolioBND → ModificaPortfolioCTRL; GestionePortfolioBND → EliminaPortfolioCTRL; CreaPortfolioCTRL → Portfolio; CreaPortfolioCTRL → StudenteAFAM; CreaPortfolioCTRL → DBMSBND; ModificaPortfolioCTRL → Portfolio; ModificaPortfolioCTRL → StudenteAFAM; ModificaPortfolioCTRL → DBMSBND; EliminaPortfolioCTRL → Portfolio; EliminaPortfolioCTRL → StudenteAFAM; EliminaPortfolioCTRL → DBMSBND
 
 
 ### 3.E — Gestione Condivisione
@@ -996,7 +1012,7 @@ Per ogni sottosistema crea un *Class Diagram* e uno complessivo per le Entities.
 **DBMSBND** `<<boundary>>`
 - Funzioni: queryPortfolio(), insertLink(), queryNotificheNonLette(), updateNotificheLette(), queryStoricoLink()
 
-- **Dipendenze:** GestionePortfolioBND ⇢ GeneraLinkCTRL; NotificheBND ⇢ NotificheCTRL; GeneraLinkCTRL ⇢ LinkCondivisione; GeneraLinkCTRL ⇢ StudenteAFAM; GeneraLinkCTRL ⇢ DBMSBND; NotificheCTRL ⇢ NotificaSistema; NotificheCTRL ⇢ StudenteAFAM; NotificheCTRL ⇢ DBMSBND
+- **Associazioni:** GestionePortfolioBND → GeneraLinkCTRL; NotificheBND → NotificheCTRL; GeneraLinkCTRL → LinkCondivisione; GeneraLinkCTRL → StudenteAFAM; GeneraLinkCTRL → DBMSBND; NotificheCTRL → NotificaSistema; NotificheCTRL → StudenteAFAM; NotificheCTRL → DBMSBND
 
 
 ### 3.F — Consultazione Pubblica
@@ -1044,7 +1060,7 @@ Per ogni sottosistema crea un *Class Diagram* e uno complessivo per le Entities.
 **DBMSBND** `<<boundary>>`
 - Funzioni: queryContenutiPubblici(), queryProfili(), queryProfiloPubblico(), queryOperePubbliche(), queryPortfolioPubblici(), queryContenutiPortfolio(), queryLink(), updateVisualizzazioni(), insertNotifica()
 
-- **Dipendenze:** BachecaPubblicaBND ⇢ BachecaCTRL; BachecaPubblicaBND ⇢ RicercaCTRL; ProfiloPubblicoBND ⇢ ProfiloPubblicoCTRL; VisualizzatoreLinkBND ⇢ AccessoLinkCTRL; BachecaCTRL ⇢ ContenutoMultimediale; BachecaCTRL ⇢ DBMSBND; RicercaCTRL ⇢ StudenteAFAM; RicercaCTRL ⇢ DBMSBND; ProfiloPubblicoCTRL ⇢ StudenteAFAM; ProfiloPubblicoCTRL ⇢ ContenutoMultimediale; ProfiloPubblicoCTRL ⇢ Portfolio; ProfiloPubblicoCTRL ⇢ DBMSBND; AccessoLinkCTRL ⇢ LinkCondivisione; AccessoLinkCTRL ⇢ Portfolio; AccessoLinkCTRL ⇢ DBMSBND
+- **Associazioni:** BachecaPubblicaBND → BachecaCTRL; BachecaPubblicaBND → RicercaCTRL; ProfiloPubblicoBND → ProfiloPubblicoCTRL; VisualizzatoreLinkBND → AccessoLinkCTRL; BachecaCTRL → ContenutoMultimediale; BachecaCTRL → DBMSBND; RicercaCTRL → StudenteAFAM; RicercaCTRL → DBMSBND; ProfiloPubblicoCTRL → StudenteAFAM; ProfiloPubblicoCTRL → ContenutoMultimediale; ProfiloPubblicoCTRL → Portfolio; ProfiloPubblicoCTRL → DBMSBND; AccessoLinkCTRL → LinkCondivisione; AccessoLinkCTRL → Portfolio; AccessoLinkCTRL → DBMSBND
 
 
 ### 3.G — Segnalazioni
@@ -1081,7 +1097,7 @@ Per ogni sottosistema crea un *Class Diagram* e uno complessivo per le Entities.
 **DBMSBND** `<<boundary>>`
 - Funzioni: insertSegnalazione(), querySegnalazioniPendenti(), querySegnalazioniRisolte(), updateSegnalazione(), updateContenuto()
 
-- **Dipendenze:** ProfiloPubblicoBND ⇢ SegnalazioneCTRL; FormSegnalazioneBND ⇢ SegnalazioneCTRL; PannelloRevisioneBND ⇢ RevisioneCTRL; SegnalazioneCTRL ⇢ Segnalazione; SegnalazioneCTRL ⇢ DBMSBND; RevisioneCTRL ⇢ Segnalazione; RevisioneCTRL ⇢ ContenutoMultimediale; RevisioneCTRL ⇢ DBMSBND
+- **Associazioni:** ProfiloPubblicoBND → SegnalazioneCTRL; FormSegnalazioneBND → SegnalazioneCTRL; PannelloRevisioneBND → RevisioneCTRL; SegnalazioneCTRL → Segnalazione; SegnalazioneCTRL → DBMSBND; RevisioneCTRL → Segnalazione; RevisioneCTRL → ContenutoMultimediale; RevisioneCTRL → DBMSBND
 
 
 ### 3.H — Diagramma complessivo Entities
@@ -1204,14 +1220,14 @@ Vista d'insieme dei package del back-end. Percorso export: `immagini/ODD/Diagram
    `service ..> repository`, `service ..> service.provider`, `repository ..> model`,
    `security ..> service`, `controller ..> security`, `service ..> exception`.
 
-### 4.4 SDD e ODD — Schema Entità-Relazione
-Schema del database relazionale. È un unico diagramma, usato sia dall'SDD (capitolo «Gestione dei
-Dati Persistenti») sia dall'ODD (capitolo «Schema E-R»). Disegnalo una volta ed **esportalo in
-entrambi i percorsi**: `immagini/SDD/SchemaER.png` e `immagini/ODD/SchemaER.png`.
+### 4.4 SDD — Schema Entità-Relazione
+Schema del database relazionale. Appartiene all'**SDD**, capitolo «Gestione dei Dati Persistenti»
+(sezioni Schema E-R, Modello Relazionale, Strutture delle Tabelle). Percorso export:
+`immagini/SDD/SchemaER.png`.
 
 Puoi realizzarlo come *ER Diagram* (se la tua edizione di Astah lo supporta) oppure come *Class
-Diagram* con classi-tabella. Una tabella per entità, con le colonne e i vincoli come da capitolo
-«Schema delle Tabelle» dell'ODD. Le tabelle e le relazioni sono:
+Diagram* con classi-tabella. Una tabella per entità, con le colonne e i vincoli come da sezione
+«Strutture delle Tabelle» dell'SDD. Le tabelle e le relazioni sono:
 
 - **studente_afam** (PK `matricola`) — anagrafica e `ruolo`.
 - **credenziali_sicurezza** (PK `matricola`, FK→studente_afam) — `password_hash`, `segreto_2fa`.
@@ -1234,75 +1250,199 @@ Traccia le relazioni con le **cardinalità** alle estremità; segna PK e FK su c
 
 ### 4.5 ODD — Diagrammi delle classi per package
 
-Per ognuno crea un *Class Diagram* dedicato. Applica gli stereotipi appropriati e riporta le
-funzioni/attributi. Le dipendenze seguono i livelli (controller→service→repository→model).
+**Convenzione (come nell'esempio di riferimento):** nei diagrammi delle classi dell'ODD le classi
+si disegnano **affiancate dentro un box package** (`pkg`), **senza tracciare collegamenti** tra
+loro — niente associazioni, niente dipendenze, niente frecce. Ogni classe riporta lo stereotipo,
+gli attributi (con tipo e visibilità) e i metodi (con parametri tipizzati, tipo di ritorno e
+visibilità). In Astah: crea un *Class Diagram*, inserisci un *Package* (o un frame) come contenitore,
+poi trascina dentro le classi con i loro membri.
+
+Legenda visibilità: `+` public, `-` private, `#` protected.
 
 #### 4.5.1 model — Percorso: `immagini/ODD/model.png`
-Le entità di dominio (stereotipo `<<entity>>`), una classe per tabella, con attributi e relazioni.
-Classi: `StudenteAFAM`, `CredenzialiSicurezza`, `ContenutoMultimediale`, `Portfolio`,
-`LinkCondivisione`, `Segnalazione`, `NotificaSistema`, `IdentitaFederata`, `TokenResetPassword`.
-Aggiungi le enumerazioni: `VisibilitaEnum` (PRIVATO, PUBBLICO, RIMOSSO), `RuoloEnum`
-(STUDENTE, REVISORE), `StatoSegnalazioneEnum` (IN_ATTESA, ACCOLTA, ARCHIVIATA), `MotivazioneEnum`.
-Riporta le associazioni con le molteplicità (come nel diagramma Entities del RAD, sezione 3.H).
+Le nove entità di dominio (stereotipo `<<entity>>`), affiancate nel package. Attributi (visibilità
+`-`), nessun collegamento tra le classi. I getter/setter standard sono impliciti.
+
+- **`StudenteAFAM`** : `- matricola: String`, `- nome: String`, `- cognome: String`,
+  `- emailIstituzionale: String`, `- ruolo: RuoloEnum`, `- avatarPath: String`.
+- **`CredenzialiSicurezza`** : `- id: String`, `- matricola: String`, `- passwordHash: String`,
+  `- totpSecretKey: String`.
+- **`ContenutoMultimediale`** : `- idContenuto: String`, `- matricola: String`, `- titolo: String`,
+  `- tipoFile: String`, `- dimensioneFile: long`, `- percorsoLogico: String`,
+  `- livelloVisibilita: VisibilitaEnum`, `- dataCaricamento: LocalDateTime`,
+  `- thumbnailPath: String`, `- descrizione: String`.
+- **`Portfolio`** : `- idPortfolio: String`, `- matricola: String`, `- titoloRaccolta: String`,
+  `- dataCreazione: LocalDateTime`, `- livelloVisibilita: VisibilitaEnum`,
+  `- contenuti: List<ContenutoMultimediale>`.
+- **`LinkCondivisione`** : `- tokenUnivoco: String`, `- idPortfolio: String`, `- matricola: String`,
+  `- dataScadenza: LocalDateTime`, `- numeroVisualizzazioni: int`.
+- **`NotificaSistema`** : `- idNotifica: String`, `- tokenUnivoco: String`, `- letta: boolean`,
+  `- dataGenerazione: LocalDateTime`.
+- **`Segnalazione`** : `- idSegnalazione: String`, `- idContenuto: String`,
+  `- matricolaAutore: String`, `- motivazione: MotivazioneEnum`, `- descrizioneLibera: String`,
+  `- stato: StatoSegnalazioneEnum`, `- dataInvio: LocalDateTime`.
+- **`IdentitaFederata`** : `- idFederato: String`, `- matricola: String`,
+  `- idIstitutoEsterno: String`, `- dataAttivazione: LocalDateTime`.
+- **`TokenResetPassword`** : `- token: String`, `- matricola: String`,
+  `- dataScadenza: LocalDateTime`, `- utilizzato: boolean`.
+
+Aggiungi le quattro enumerazioni (classi con stereotipo `<<enumeration>>`, valori come attributi):
+`VisibilitaEnum` { PRIVATO, PUBBLICO, RIMOSSO }, `RuoloEnum` { STUDENTE, REVISORE },
+`StatoSegnalazioneEnum` { IN_ATTESA, ACCOLTA, ARCHIVIATA },
+`MotivazioneEnum` { VIOLAZIONE_DIRITTO_AUTORE, CONTENUTO_INAPPROPRIATO, ALTRO }.
 
 #### 4.5.2 util — Percorso: `immagini/ODD/util.png`
-Classi di utilità (nessuno stereotipo particolare, o `<<utility>>`), con i loro metodi principali:
-- `JwtUtils` : `generaToken()`, `validaToken()`, `estraiMatricola()`, `estraiRuolo()`
-- `SecurityUtils` : `getMatricolaCorrente()`, `getRuoloCorrente()`, `isRevisore()`
-- `ValidationUtils` : `validaEmail()`, `validaPassword()`, `validaDatiProfilo()`
-- `PasswordUtils` : `hash()`, `verifica()`
-- `TotpUtil` : `generaSegreto()`, `generaQR()`, `verificaCodice()`
-- `TokenUtil` : `generaTokenCondivisione()`, `generaTokenReset()`
+Contiene le due boundary trasversali di messaggistica (stereotipo `<<boundary>>`), affiancate:
+- **`MessaggioBND`** : `+ mostra(): void`, `+ clickOK(): Button`.
+- **`ErroreBND`** : `+ mostra(): void`, `+ clickOK(): Button`.
 
 #### 4.5.3 service — Percorso: `immagini/ODD/service.png`
-I service (stereotipo `<<control>>` o `<<service>>`), con le operazioni pubbliche principali:
-- `AuthService`, `TotpService`, `PasswordResetService`, `IdentitaFederataService`,
-  `PortfolioService`, `CondivisioneService`, `SegnalazioneService`.
-Per le tre classi complesse (Account, Condivisione, Segnalazioni) usa le segnature complete già
-riportate nel capitolo «Dizionario delle Operazioni» dell'ODD. Collega ogni service ai repository
-che usa (`..>`) e, dove previsto, ai provider in `service.provider`.
+Contiene le boundary dei provider esterni (stereotipo `<<boundary>>`), affiancate:
+- **`ProviderSPIDeIDASBND`** : `+ selezionaProvider(): void`, `+ inserisciCredenziali(): void`,
+  `+ clickAccedi(): Button`, `+ getDati(): String[]`.
+- **`MailProviderBND`** : `+ inviaEmail(): void`, `+ inviaLinkRecupero(): void`.
 
 #### 4.5.4 repository — Percorso: `immagini/ODD/repository.png`
-Le interfacce repository (stereotipo `<<repository>>` o `<<interface>>`), una per entità:
-`StudenteAFAMRepository`, `CredenzialiSicurezzaRepository`, `ContenutoMultimedialeRepository`,
-`PortfolioRepository`, `LinkCondivisioneRepository`, `NotificaSistemaRepository`,
-`SegnalazioneRepository`, `IdentitaFederataRepository`, `TokenResetPasswordRepository`.
-Ogni interfaccia dipende dalla rispettiva entità del `model` (`..>`). Puoi indicare che estendono
-un'interfaccia generica di persistenza (es. `JpaRepository`).
+Un **unico** box con stereotipo `<<boundary>>` chiamato **`DBMSBND`**, che raccoglie tutti i metodi
+di accesso ai dati (query/insert/update/delete) esposti verso i service. Tutti i metodi hanno
+visibilità `+`. Elenco (raggruppato per tipo):
 
-### 4.6 ODD — Diagrammi delle classi per area funzionale
+*Query:* `+ queryCredenziali(email: String): CredenzialiSicurezza`,
+`+ queryStudente(matricola: String): StudenteAFAM`,
+`+ querySegretoSecondoFattore(matricola: String): String`,
+`+ queryProfilo(matricola: String): StudenteAFAM`,
+`+ queryContenuti(matricola: String): ContenutoMultimediale[0..*]`,
+`+ queryPortfolios(matricola: String): Portfolio[0..*]`,
+`+ queryContenutiPubblici(): ContenutoMultimediale[0..*]`,
+`+ queryProfiliPubblici(nome: String): StudenteAFAM[0..*]`,
+`+ queryLink(token: String): LinkCondivisione`,
+`+ queryNotifiche(matricola: String): NotificaSistema[0..*]`,
+`+ querySegnalazioniPendenti(): Segnalazione[0..*]`,
+`+ queryStoricoSegnalazioni(): Segnalazione[0..*]`,
+`+ queryStoricoLink(matricola: String): LinkCondivisione[0..*]`.
 
-Questi diagrammi mostrano, per ciascuna area, le schermate (boundary della SPA), i controller REST
-e i service coinvolti. Riusa le classi già definite negli altri diagrammi.
+*Insert:* `+ insertStudente(studente: StudenteAFAM): boolean`,
+`+ insertCredenziali(cred: CredenzialiSicurezza): boolean`,
+`+ insertContenuto(contenuto: ContenutoMultimediale): boolean`,
+`+ insertPortfolio(portfolio: Portfolio): boolean`,
+`+ insertLink(link: LinkCondivisione): boolean`,
+`+ insertNotifica(notifica: NotificaSistema): boolean`,
+`+ insertSegnalazione(segnalazione: Segnalazione): boolean`,
+`+ insertIdentitaFederata(identita: IdentitaFederata): boolean`,
+`+ insertTokenReset(token: TokenResetPassword): boolean`,
+`+ insertSessione(matricola: String): boolean`.
 
-#### 4.6.1 Gestione Account — `immagini/ODD/GestioneAccount_BND.png` e `..._CTRL.png`
-- **BND**: le schermate della SPA — `RegistrazioneBND`, `LoginBND`, `Verifica2FABND`,
-  `RecuperoPasswordBND`, `DashboardBND`, `ImpostazioniProfiloBND`.
-- **CTRL**: `AuthController` e `ProfiloController`, collegati ai service `AuthService`,
-  `TotpService`, `PasswordResetService`, `IdentitaFederataService`.
-- Copre GA-01–GA-06 e GP-01–GP-03.
+*Update:* `+ updateProfilo(studente: StudenteAFAM): boolean`,
+`+ updateContenuto(contenuto: ContenutoMultimediale): boolean`,
+`+ updatePortfolio(portfolio: Portfolio): boolean`,
+`+ updateThumbnail(idContenuto: String, path: String): boolean`,
+`+ updateVisibilitaContenuto(idContenuto: String, visibilita: String): boolean`,
+`+ updateStatoSegnalazione(idSegnalazione: String, stato: String): boolean`,
+`+ updateContatoreVisualizzazioni(token: String): boolean`,
+`+ updateNotificheLette(matricola: String): boolean`,
+`+ updatePassword(matricola: String, passwordHash: String): boolean`.
 
-#### 4.6.2 Gestione Portfolio — `immagini/ODD/GestionePortfolio_BND.png` e `..._CTRL.png`
-- **BND**: `ArchivioBND`, `GestionePortfolioBND`, `CreaPortfolioBND`, `ModificaPortfolioBND`.
-- **CTRL**: `ContenutoController`, `PortfolioController`, collegati a `PortfolioService`.
-- Copre GC-01–GC-04 e GF-01–GF-03.
+*Delete/stato:* `+ marcaContenutoRimosso(idContenuto: String): boolean`,
+`+ deletePortfolio(idPortfolio: String): boolean`.
 
-#### 4.6.3 Gestione Condivisione — `immagini/ODD/GestioneCondivisione.png`
-- **BND**: `GestionePortfolioBND` (azione condividi), `NotificheBND`.
-- **CTRL**: `PortfolioController` (generazione link), `ProfiloController` (notifiche),
-  collegati a `CondivisioneService`.
-- Copre GD-01, GD-02.
+*Verifiche:* `+ checkRegistrato(email: String): boolean`,
+`+ checkProprietaContenuto(idContenuto: String, matricola: String): boolean`,
+`+ checkProprietaPortfolio(idPortfolio: String, matricola: String): boolean`.
 
-#### 4.6.4 Consultazione — `immagini/ODD/Consultazione.png`
-- **BND**: `BachecaPubblicaBND`, `ProfiloPubblicoBND`, `VisualizzatorePortfolioBND`,
-  `VisualizzatoreLinkBND`.
-- **CTRL**: `PublicController`, `FileController`.
-- Copre CO-01–CO-04.
+### 4.6 ODD — Diagrammi delle classi per sottosistema funzionale
 
-#### 4.6.5 Gestione Segnalazioni — `immagini/ODD/GestioneSegnalazioni.png`
-- **BND**: `FormSegnalazioneBND`, `PannelloRevisioneBND`.
-- **CTRL**: `ReportController`, collegato a `SegnalazioneService`.
-- Copre GS-01, GS-02.
+Come nell'esempio di riferimento, **ogni sottosistema ha due diagrammi separati**: uno con tutte le
+**Boundary** (`<<boundary>>`) e uno con tutti i **Control** (`<<control>>`). Le classi sono
+affiancate nel package, **senza collegamenti**. Ogni classe riporta i metodi con firma completa
+(le BND hanno tipicamente metodi `mostra...(): void` e `click...(): Button`; i CTRL hanno i metodi
+`create...()` e le operazioni di logica).
+
+#### 4.6.1 Gestione Account — `GestioneAccount_BND.png` e `GestioneAccount_CTRL.png`
+Copre GA-01–GA-06 e GP-01–GP-03.
+
+*Diagramma BND* (`<<boundary>>`, affiancate senza collegamenti):
+`BachecaPubblicaBND` (`+ mostraBacheca(): void`, `+ clickAccedi(): Button`, `+ clickDashboard(): Button`),
+`LoginBND` (`+ mostraLogin(): void`, `+ inserisciCredenziali(): void`, `+ clickAccedi(): Button`,
+`+ clickAccediSPID(): Button`, `+ clickRecuperoPassword(): Button`),
+`Verifica2FABND` (`+ mostraVerifica2FA(): void`, `+ inserisciCodice(): void`, `+ clickVerifica(): Button`),
+`RegistrazioneBND` (`+ mostraFormRegistrazione(): void`, `+ inserisci(): void`, `+ clickRegistrati(): Button`),
+`RecuperoPasswordBND` (`+ mostraFormRecupero(): void`, `+ compilaForm(): void`, `+ clickConferma(): Button`),
+`DashboardBND` (`+ mostraDashboard(): void`, `+ clickImpostazioni(): Button`),
+`ImpostazioniProfiloBND` (`+ mostraImpostazioni(): void`, `+ modificaCampi(): void`,
+`+ clickSalva(): Button`, `+ clickFederazione(): Button`).
+
+*Diagramma CTRL* (`<<control>>`, affiancate senza collegamenti):
+`LoginCTRL` (`+ createLogin(): void`, `+ verificaCredenziali(email: String, password: String): boolean`),
+`Verifica2FACTRL` (`+ createVerifica2FA(): void`, `+ verificaCodice(codice: String): boolean`),
+`RegistrazioneCTRL` (`+ createRegistrazione(): void`, `+ verificaFormato(): boolean`),
+`RecuperoPasswordCTRL` (`+ createRecuperoPassword(): void`),
+`AccessoFederatoCTRL` (`+ createAccessoFederato(): void`, `+ verificaStudenteSPID(): boolean`),
+`ProfiloCTRL` (`+ createVisualizzaProfilo(): void`),
+`ModificaProfiloCTRL` (`+ createModificaProfilo(): void`, `+ verificaDati(): boolean`),
+`FederazioneCTRL` (`+ createFederazione(): void`),
+`LogoutCTRL` (`+ createLogout(): void`).
+
+#### 4.6.2 Gestione Portfolio — `GestionePortfolio_BND.png` e `GestionePortfolio_CTRL.png`
+Copre GC-01–GC-04 e GF-01–GF-03.
+
+*Diagramma BND:*
+`BachecaPubblicaBND` (voci di navigazione verso archivio/portfolio),
+`ArchivioBND` (`+ mostraArchivio(): void`, `+ clickCarica(): Button`, `+ clickModifica(): Button`,
+`+ clickElimina(): Button`, `+ clickThumbnail(): Button`),
+`GestionePortfolioBND` (`+ mostraGestionePortfolio(): void`, `+ clickCrea(): Button`,
+`+ clickModifica(): Button`, `+ clickElimina(): Button`, `+ clickCondividi(): Button`),
+`CreaPortfolioBND` (`+ mostraForm(): void`, `+ compilaForm(): void`, `+ clickSalva(): Button`),
+`ModificaPortfolioBND` (`+ mostraForm(): void`, `+ compilaForm(): void`, `+ clickSalva(): Button`).
+
+*Diagramma CTRL:*
+`CaricaContenutoCTRL` (`+ createCaricaContenuto(): void`, `+ verificaDimensione(): boolean`),
+`ModificaContenutoCTRL` (`+ createModificaContenuto(): void`),
+`EliminaContenutoCTRL` (`+ createEliminaContenuto(): void`),
+`ThumbnailCTRL` (`+ createImpostaThumbnail(): void`),
+`CreaPortfolioCTRL` (`+ createCreaPortfolio(): void`),
+`ModificaPortfolioCTRL` (`+ createModificaPortfolio(): void`),
+`EliminaPortfolioCTRL` (`+ createEliminaPortfolio(): void`).
+
+#### 4.6.3 Gestione Condivisione — `GestioneCondivisione_BND.png` e `GestioneCondivisione_CTRL.png`
+Copre GD-01, GD-02.
+
+*Diagramma BND:*
+`GestionePortfolioBND` (`+ clickCondividi(): Button`),
+`NotificheBND` (`+ mostraNotifiche(): void`, `+ clickSegnaLette(): Button`).
+
+*Diagramma CTRL:*
+`GeneraLinkCTRL` (`+ createGeneraLink(): void`, `+ generaToken(): String`),
+`NotificheCTRL` (`+ createVisualizzaNotifiche(): void`, `+ segnaLette(): void`).
+
+#### 4.6.4 Consultazione — `Consultazione_BND.png` e `Consultazione_CTRL.png`
+Copre CO-01–CO-04.
+
+*Diagramma BND:*
+`BachecaPubblicaBND` (`+ mostraBacheca(): void`, `+ clickProfilo(): Button`, `+ ricerca(): void`),
+`ProfiloPubblicoBND` (`+ mostraProfiloPubblico(): void`, `+ clickContenuto(): Button`,
+`+ clickSegnala(): Button`),
+`VisualizzatorePortfolioBND` (`+ mostraPortfolio(): void`),
+`VisualizzatoreLinkBND` (`+ mostraVisualizzatoreLink(): void`, `+ clickContenuto(): Button`).
+
+*Diagramma CTRL:*
+`BachecaCTRL` (`+ createBacheca(): void`),
+`RicercaCTRL` (`+ createRicerca(): void`),
+`ProfiloPubblicoCTRL` (`+ createProfiloPubblico(): void`),
+`AccessoLinkCTRL` (`+ createAccessoLink(): void`, `+ validaToken(): boolean`).
+
+#### 4.6.5 Gestione Segnalazioni — `GestioneSegnalazioni_BND.png` e `GestioneSegnalazioni_CTRL.png`
+Copre GS-01, GS-02.
+
+*Diagramma BND:*
+`ProfiloPubblicoBND` (`+ clickSegnala(): Button`),
+`FormSegnalazioneBND` (`+ mostraFormSegnalazione(): void`, `+ selezionaMotivazione(): void`,
+`+ inserisciDescrizione(): void`, `+ clickInvia(): Button`),
+`PannelloRevisioneBND` (`+ mostraPannelloRevisione(): void`, `+ clickAccogli(): Button`,
+`+ clickArchivia(): Button`).
+
+*Diagramma CTRL:*
+`SegnalazioneCTRL` (`+ createInviaSegnalazione(): void`),
+`RevisioneCTRL` (`+ createRevisione(): void`, `+ accogli(): void`, `+ archivia(): void`).
 
 ## 5. EXPORT DELLE IMMAGINI (coerenza con il LaTeX)
 
@@ -1317,7 +1457,7 @@ sottocartelle, altrimenti le figure non compaiono):
 | Entities (RAD) | `immagini/CD/Entities.png` | `immagini/CD/Entities.png` |
 | Mockup (RAD) | `immagini/Mockup/<Nome>.png` | `immagini/Mockup/Dashboard.png` |
 | Package/Deployment (SDD) | `immagini/SDD/<Nome>.png` | `immagini/SDD/Deployment.png` |
-| Classi/E-R/Package (ODD) | `immagini/ODD/<Nome>.png` | `immagini/ODD/SchemaER.png` |
+| Classi/Package (ODD) | `immagini/ODD/<Nome>.png` | `immagini/ODD/model.png` |
 
 Chiavi UC/CD dei sottosistemi: `Autenticazione`, `GestioneProfilo`, `GestioneContenuti`,
 `GestionePortfolio`, `GestioneCondivisione`, `ConsultazionePubblica`, `Segnalazioni`.
@@ -1328,10 +1468,11 @@ Nomi cartelle sequence (con spazi): `Autenticazione`, `Gestione Profilo`, `Gesti
 Nomi file SDD: `ScomposizioneSottosistemi.png`, `SottosistemaAccount.png`,
 `SottosistemaPortfolio.png`, `SottosistemaCondivisione.png`, `SottosistemaConsultazione.png`,
 `SottosistemaSegnalazioni.png`, `SchemaER.png`, `Deployment.png`.
-Nomi file ODD: `DiagrammaPackage.png`, `SchemaER.png`, `model.png`, `util.png`, `service.png`,
+Nomi file ODD: `DiagrammaPackage.png`, `model.png`, `util.png`, `service.png`,
 `repository.png`, `GestioneAccount_BND.png`, `GestioneAccount_CTRL.png`,
-`GestionePortfolio_BND.png`, `GestionePortfolio_CTRL.png`, `GestioneCondivisione.png`,
-`Consultazione.png`, `GestioneSegnalazioni.png`.
+`GestionePortfolio_BND.png`, `GestionePortfolio_CTRL.png`, `GestioneCondivisione_BND.png`,
+`GestioneCondivisione_CTRL.png`, `Consultazione_BND.png`, `Consultazione_CTRL.png`,
+`GestioneSegnalazioni_BND.png`, `GestioneSegnalazioni_CTRL.png`.
 
 **Export in Astah:** menu *File → Export Image* (o tasto destro sul diagramma → *Export Image*),
 formato PNG, e salva con il nome/percorso della tabella.
