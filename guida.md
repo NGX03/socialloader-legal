@@ -1153,61 +1153,94 @@ PostgreSQL). A differenza dei diagrammi del RAD (di analisi), questi sono diagra
 **progettazione**: mostrano livelli, package, nodi di deployment, classi di design e schema del
 database.
 
-### 4.1 SDD — Diagramma dei package (scomposizione a livelli)
-Diagramma delle dipendenze tra i livelli architetturali del sistema.
-Percorso export: `immagini/SDD/ScomposizioneSottosistemi.png`.
+### 4.1 SDD — Scomposizione in sottosistemi (diagrammi dei componenti)
 
-1. *Diagram → Create Package Diagram*, nominalo «Scomposizione Sottosistemi».
-2. Crea un package per ciascun livello, impilati dall'alto in basso (il livello superiore dipende
-   da quello sottostante):
-   - `Front-end SPA (React)` — presentazione lato browser
-   - `Controller` — endpoint REST
-   - `Service` — logica di business
-   - `Repository` — accesso ai dati (JPA)
-   - `Model` — entità di dominio
-3. A lato, aggiungi i package trasversali: `security`, `config`, `exception`, `dto`.
-4. Collega i livelli con **dipendenze** (freccia tratteggiata a punta aperta `..>`), sempre
-   dall'alto verso il basso: `Front-end SPA ..> Controller`, `Controller ..> Service`,
-   `Service ..> Repository`, `Repository ..> Model`. Le dipendenze sono **unidirezionali**.
-5. Indica che `Front-end SPA ..> Controller` avviene «via REST/HTTP(S)» (etichetta sulla freccia).
-6. I package `security` e `dto` sono usati trasversalmente: puoi collegare `Controller ..> dto`,
-   `Controller ..> security`, `security ..> Service` con dipendenze leggere.
+La scomposizione dell'SDD si realizza con **diagrammi dei componenti** (*Component Diagram*, box
+`cmp`). Serve una **vista d'insieme** più, per ciascuno dei 5 sottosistemi, **tre diagrammi**:
+generale, interfaccia, controller. In Astah: *Diagram → Create Component Diagram*; ogni elemento è
+un *Component* (rettangolo con l'icona del componente); i collegamenti sono **dipendenze**
+tratteggiate `..>`.
 
-**Diagrammi di espansione dei sottosistemi.** Dopo il diagramma d'insieme, l'SDD prevede un
-diagramma per ciascuno dei **5 sottosistemi funzionali**, che ne mostra le classi distribuite sui
-quattro livelli. Crea un *Class Diagram* (o *Package Diagram*) per ognuno, disponendo le classi in
-quattro fasce orizzontali (Presentazione → Controller → Service → Repository) e collegandole con
-dipendenze `..>` dall'alto verso il basso. Riusa le classi già definite nei diagrammi dell'ODD.
+**Vista d'insieme** — Percorso: `immagini/SDD/ScomposizioneSottosistemi.png`.
+1. Crea un Component Diagram. Inserisci un componente centrale **`DBMSBND`**.
+2. Inserisci i 5 componenti dei sottosistemi: `Gestione Account`, `Gestione Portfolio`,
+   `Gestione Condivisione`, `Consultazione`, `Gestione Segnalazioni`.
+3. Traccia una **dipendenza** `..>` da ciascun sottosistema verso `DBMSBND`. Nessun collegamento
+   diretto tra i sottosistemi.
 
-- **SottosistemaAccount.png** — Presentazione: schermate registrazione/login/2FA/recupero/dashboard/impostazioni · Controller: `AuthController`, `ProfiloController` · Service: `AuthService`, `TotpService`, `PasswordResetService`, `IdentitaFederataService` · Repository: `StudenteAFAMRepository`, `CredenzialiSicurezzaRepository`, `IdentitaFederataRepository`, `TokenResetPasswordRepository`.
-- **SottosistemaPortfolio.png** — Presentazione: archivio, gestione portfolio, form crea/modifica · Controller: `ContenutoController`, `PortfolioController` · Service: `PortfolioService` · Repository: `ContenutoMultimedialeRepository`, `PortfolioRepository`.
-- **SottosistemaCondivisione.png** — Presentazione: azione condividi, notifiche · Controller: `PortfolioController`, `ProfiloController` · Service: `CondivisioneService` · Repository: `LinkCondivisioneRepository`, `NotificaSistemaRepository`.
-- **SottosistemaConsultazione.png** — Presentazione: bacheca, ricerca, profilo pubblico, visualizzatore link · Controller: `PublicController`, `FileController` · Service: `PortfolioService`, `CondivisioneService` (sola lettura) · Repository: `ContenutoMultimedialeRepository`, `PortfolioRepository`, `LinkCondivisioneRepository`, `StudenteAFAMRepository`.
-- **SottosistemaSegnalazioni.png** — Presentazione: form segnalazione, pannello revisione · Controller: `ReportController` · Service: `SegnalazioneService` · Repository: `SegnalazioneRepository`, `ContenutoMultimedialeRepository`.
+Per **ogni** sottosistema, poi, crea i tre diagrammi seguenti.
 
-Per ciascuno, disegna le quattro fasce, colloca le classi elencate nella fascia corrispondente e
-traccia le dipendenze verticali (ogni schermata → il suo controller; ogni controller → i suoi
-service; ogni service → i suoi repository). Esporta con il nome indicato in `immagini/SDD/`.
+**(a) Scomposizione generale** — tre componenti in fila collegati da dipendenze:
+`Interface <Nome> ..> Controller <Nome> ..> DBMSBND`.
 
-### 4.2 SDD — Diagramma di deployment
-Distribuzione fisica del sistema sui nodi. Percorso export: `immagini/SDD/Deployment.png`.
+**(b) Scomposizione interfaccia** — un componente `Interface <Nome>` che *contiene* tutte le
+boundary del sottosistema (stereotipo `<<boundary>>`), affiancate, senza collegamenti.
 
-1. *Diagram → Create Deployment Diagram*, nominalo «Deployment».
-2. Crea tre **nodi** (`<<device>>` / `<<node>>`):
-   - **`:Browser utente`** — contiene l'artefatto `SPA React`.
-   - **`:Server applicativo`** — contiene l'artefatto `Applicazione Spring Boot (REST API)` e il
-     `File System (contenuti e anteprime)`.
-   - **`:Server di base dati`** — contiene l'artefatto `DBMS PostgreSQL`.
-3. Aggiungi tre nodi esterni per i provider: **`:Mail Provider`**, **`:Provider SPID/eIDAS`**,
-   **`:Nodo AFAM`**.
-4. Collega i nodi con **associazioni di comunicazione** etichettate con il protocollo:
-   - `Browser utente — Server applicativo` : `HTTP(S) / JSON / JWT`
-   - `Server applicativo — Server di base dati` : `connessione DB (JDBC/JPA)`
-   - `Server applicativo — Mail Provider` : `HTTP(S)` (invio email di recupero)
-   - `Server applicativo — Provider SPID/eIDAS` : `HTTP(S)` (predisposto)
-   - `Server applicativo — Nodo AFAM` : `HTTP(S)` (predisposto)
-5. Nota: SPID/eIDAS e AFAM sono predisposti ma non attivi; puoi marcarli con una nota
-   «integrazione predisposta».
+**(c) Scomposizione controller** — un componente `Controller <Nome>` che *contiene* tutti i control
+(stereotipo `<<control>>`), affiancati, più le eventuali entity (`<<entity>>`) e le boundary di
+servizio (es. `MailProviderBND`), senza collegamenti.
+
+Di seguito, per ciascun sottosistema, i componenti da inserire nei diagrammi (b) e (c).
+
+#### 4.1.1 Gestione Account — `Account_Generale.png`, `Account_Interface.png`, `Account_Controller.png`
+- **Interface** (`<<boundary>>`): `ErroreBND`, `MessaggioBND`, `ProviderSPIDeIDASBND`,
+  `BachecaPubblicaBND`, `LoginBND`, `Verifica2FABND`, `RegistrazioneBND`, `RecuperoPasswordBND`,
+  `DashboardBND`, `ImpostazioniProfiloBND`.
+- **Controller** (`<<control>>` + servizi/entity): `LoginCTRL`, `RegistrazioneCTRL`,
+  `Verifica2FACTRL`, `AccessoFederatoCTRL`, `RecuperoPasswordCTRL`, `ProfiloCTRL`,
+  `ModificaProfiloCTRL`, `FederazioneCTRL`, `LogoutCTRL`, `MailProviderBND` (`<<boundary>>`),
+  `StudenteAFAM` (`<<entity>>`).
+
+#### 4.1.2 Gestione Portfolio — `Portfolio_Generale.png`, `Portfolio_Interface.png`, `Portfolio_Controller.png`
+- **Interface** (`<<boundary>>`): `ErroreBND`, `MessaggioBND`, `ArchivioBND`,
+  `GestionePortfolioBND`, `CreaPortfolioBND`, `ModificaPortfolioBND`, `ListaTipiFileBND`.
+- **Controller** (`<<control>>` + entity): `CaricaContenutoCTRL`, `ModificaContenutoCTRL`,
+  `EliminaContenutoCTRL`, `ThumbnailCTRL`, `CreaPortfolioCTRL`, `ModificaPortfolioCTRL`,
+  `EliminaPortfolioCTRL`, `ContenutoMultimediale` (`<<entity>>`), `Portfolio` (`<<entity>>`).
+
+#### 4.1.3 Gestione Condivisione — `Condivisione_Generale.png`, `Condivisione_Interface.png`, `Condivisione_Controller.png`
+- **Interface** (`<<boundary>>`): `ErroreBND`, `MessaggioBND`, `GestionePortfolioBND`
+  (azione condividi), `NotificheBND`, `FormScadenzaLinkBND`.
+- **Controller** (`<<control>>` + entity): `GeneraLinkCTRL`, `NotificheCTRL`,
+  `LinkCondivisione` (`<<entity>>`), `NotificaSistema` (`<<entity>>`).
+
+#### 4.1.4 Consultazione — `Consultazione_Generale.png`, `Consultazione_Interface.png`, `Consultazione_Controller.png`
+- **Interface** (`<<boundary>>`): `ErroreBND`, `MessaggioBND`, `BachecaPubblicaBND`,
+  `ProfiloPubblicoBND`, `VisualizzatorePortfolioBND`, `VisualizzatoreLinkBND`,
+  `SchermataRicercaProfiloBND`.
+- **Controller** (`<<control>>` + entity): `BachecaCTRL`, `RicercaCTRL`, `ProfiloPubblicoCTRL`,
+  `AccessoLinkCTRL`, `ContenutoMultimediale` (`<<entity>>`), `Portfolio` (`<<entity>>`),
+  `StudenteAFAM` (`<<entity>>`).
+
+#### 4.1.5 Gestione Segnalazioni — `Segnalazioni_Generale.png`, `Segnalazioni_Interface.png`, `Segnalazioni_Controller.png`
+- **Interface** (`<<boundary>>`): `ErroreBND`, `MessaggioBND`, `FormSegnalazioneBND`,
+  `PannelloRevisioneBND`, `DettagliSegnalazioneBND`, `ListaSegnalazioniBND`.
+- **Controller** (`<<control>>` + entity): `SegnalazioneCTRL`, `RevisioneCTRL`,
+  `Segnalazione` (`<<entity>>`), `ContenutoMultimediale` (`<<entity>>`).
+
+### 4.2 SDD — Mappatura Hardware/Software (deployment)
+Mappatura dei sottosistemi sui nodi, secondo il modello dell'esempio di riferimento. Percorso
+export: `immagini/SDD/Deployment.png`. Si realizza come *Deployment Diagram* (o *Package/Component
+Diagram* con nodi annidati).
+
+1. *Diagram → Create Deployment Diagram*, nominalo «Mappatura Hardware/Software».
+2. Crea il nodo contenitore **`Server applicativo`** (`<<node>>`). Al suo interno colloca i **5
+   componenti** dei sottosistemi, affiancati: `Gestione Account`, `Gestione Portfolio`,
+   `Gestione Condivisione`, `Consultazione`, `Gestione Segnalazioni`.
+3. A destra, crea i **nodi host esterni** separati (`<<node>>`), ciascuno contenente il proprio
+   componente:
+   - **`DBHost`** → contiene `DBMS`
+   - **`MailHost`** → contiene `Provider SMTP`
+   - **`SPIDHost`** → contiene `Provider SPID`
+   - **`EIDASHost`** → contiene `Provider eIDAS`
+4. A sinistra (o sopra), crea il nodo **`Browser`** (`<<device>>`) che contiene l'artefatto
+   `SPA React`.
+5. Traccia i collegamenti (dipendenze tratteggiate `..>`, come nell'esempio):
+   - `Browser ..> Server applicativo` : etichetta `HTTP(S) / JSON / JWT`
+   - da **ogni** sottosistema `..> DBHost` (tutti accedono alla base dati)
+   - `Gestione Account ..> MailHost` (email di recupero)
+   - `Gestione Account ..> SPIDHost` e `Gestione Account ..> EIDASHost` (accesso federato)
+6. Puoi marcare SPIDHost/EIDASHost con una nota «integrazione predisposta».
 
 ### 4.3 ODD — Diagramma dei package generale
 Vista d'insieme dei package del back-end. Percorso export: `immagini/ODD/DiagrammaPackage.png`.
@@ -1465,9 +1498,10 @@ Chiavi UC/CD dei sottosistemi: `Autenticazione`, `GestioneProfilo`, `GestioneCon
 Nomi cartelle sequence (con spazi): `Autenticazione`, `Gestione Profilo`, `Gestione Contenuti`,
 `Gestione Portfolio`, `Gestione Condivisione`, `Consultazione Pubblica`, `Segnalazioni`.
 
-Nomi file SDD: `ScomposizioneSottosistemi.png`, `SottosistemaAccount.png`,
-`SottosistemaPortfolio.png`, `SottosistemaCondivisione.png`, `SottosistemaConsultazione.png`,
-`SottosistemaSegnalazioni.png`, `SchemaER.png`, `Deployment.png`.
+Nomi file SDD: `ScomposizioneSottosistemi.png` (vista d'insieme); per ciascun sottosistema i tre
+diagrammi `<Nome>_Generale.png`, `<Nome>_Interface.png`, `<Nome>_Controller.png` con `<Nome>` in
+{`Account`, `Portfolio`, `Condivisione`, `Consultazione`, `Segnalazioni`}; più `SchemaER.png` e
+`Deployment.png`.
 Nomi file ODD: `DiagrammaPackage.png`, `model.png`, `util.png`, `service.png`,
 `repository.png`, `GestioneAccount_BND.png`, `GestioneAccount_CTRL.png`,
 `GestionePortfolio_BND.png`, `GestionePortfolio_CTRL.png`, `GestioneCondivisione_BND.png`,
