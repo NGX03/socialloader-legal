@@ -1242,16 +1242,32 @@ Diagram* con nodi annidati).
    - `Gestione Account ..> SPIDHost` e `Gestione Account ..> EIDASHost` (accesso federato)
 6. Puoi marcare SPIDHost/EIDASHost con una nota «integrazione predisposta».
 
-### 4.3 ODD — Diagramma dei package generale
-Vista d'insieme dei package del back-end. Percorso export: `immagini/ODD/DiagrammaPackage.png`.
+### 4.3 ODD — Diagramma dei package
+Vista d'insieme dei package del sistema, secondo la struttura dell'esempio di riferimento.
+Percorso export: `immagini/ODD/DiagrammaPackage.png`.
 
-1. *Diagram → Create Package Diagram*, nominalo «Package it.afam.identita».
-2. Crea un package radice `it.afam.identita` e, al suo interno, i sotto-package:
-   `config`, `controller`, `service`, `service.provider`, `repository`, `model`,
-   `model.enums`, `dto`, `security`, `exception`.
-3. Collega con dipendenze `..>`: `controller ..> service`, `controller ..> dto`,
-   `service ..> repository`, `service ..> service.provider`, `repository ..> model`,
-   `security ..> service`, `controller ..> security`, `service ..> exception`.
+1. *Diagram → Create Package Diagram*, nominalo «Packages».
+2. Crea il **package radice `IdentitaAFAM`**. Al suo interno inserisci:
+   - **prima riga — package tecnici trasversali:** `config`, `util`, `service`, `model`,
+     `repository`.
+   - **package funzionali (uno per sottosistema),** ciascuno contenente due sotto-package
+     `Control` e `Interface`:
+     `Autenticazione` {Control, Interface}, `Gestione Profilo` {Control, Interface},
+     `Gestione Contenuti` {Control, Interface}, `Gestione Portfolio` {Control, Interface},
+     `Gestione Condivisione` {Control, Interface}, `Consultazione` {Control, Interface},
+     `Gestione Segnalazioni` {Control, Interface}.
+3. Crea i **package delle librerie esterne** (fuori dalla radice, a sinistra) e collega ciascuno
+   con una **dipendenza** `..>` *entrante* verso `IdentitaAFAM` (freccia dalla radice verso la
+   libreria, come nell'esempio):
+   `spring-boot-starter-web`, `spring-boot-starter-data-jpa`, `spring-boot-starter-security`,
+   `postgresql`, `jjwt`, `totp`.
+4. Crea il package **`Java`** (in basso) con i sotto-package `java.time`, `java.util`,
+   `java.security`, `java.io`; traccia `IdentitaAFAM ..> Java`.
+
+Nota: rispetto all'esempio desktop non compaiono i package `JavaFX` (l'interfaccia è realizzata dal
+front-end React, esterno al back-end) né `java.sql` (l'accesso ai dati è mediato da JPA). Il
+front-end SPA React costituisce un modulo separato e non è incluso in questo diagramma dei package
+del back-end.
 
 ### 4.4 SDD — Schema Entità-Relazione
 Schema del database relazionale. Appartiene all'**SDD**, capitolo «Gestione dei Dati Persistenti»
